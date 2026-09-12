@@ -3,108 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xylenic Systems | Autonomous Worker Proxy</title>
-    <script src="https://tailwindcss.com"></script>
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Xylenic Systems</title>
+    <!-- Forced Tailwind CSS Loading CDN -->
+    <link rel="stylesheet" href="https://cloudflare.com">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #faf9f7; }
-        .display-font { font-family: 'Space Grotesk', sans-serif; }
-        .mono-font { font-family: 'JetBrains Mono', sans-serif; }
+        body { background-color: #faf9f7; font-family: sans-serif; }
     </style>
 </head>
-<body class="text-zinc-900 min-h-screen p-6 sm:p-12 flex flex-col justify-between antialiased selection:bg-[#ebffb1]">
+<body class="text-gray-900 min-h-screen p-8 flex flex-col justify-between">
 
-    <header class="w-full max-w-5xl mx-auto flex justify-between items-center bg-white border border-zinc-200/80 rounded-xl px-6 py-4 shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-        <div class="flex items-center gap-3">
-            <div class="w-6 h-6 bg-[#ff631f] rounded-md flex items-center justify-center text-white font-black text-xs">X</div>
-            <span class="font-bold tracking-tight text-zinc-950 font-mono text-sm">XYLENIC PROTOCOL v1.0.4</span>
+    <!-- Header Frame -->
+    <header class="w-full max-w-4xl mx-auto flex justify-between items-center bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+        <div class="flex items-center gap-2">
+            <div class="w-6 h-6 bg-red-500 rounded text-white flex items-center justify-center font-bold text-xs">X</div>
+            <span class="font-mono text-sm font-bold">XYLENIC PROTOCOL v1.0.4</span>
         </div>
-        <div class="flex items-center gap-4">
-            <span class="w-2 h-2 rounded-full bg-[#ade900] animate-pulse"></span>
-            <span class="text-xs font-mono font-semibold uppercase text-zinc-500">STEALTH INGESTION ACTIVE</span>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-xs font-mono text-gray-500">STEALTH INGESTION ACTIVE</span>
         </div>
     </header>
 
-    <main class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 my-auto py-8">
-        <div class="flex flex-col justify-center text-left max-w-md">
-            <div class="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-zinc-500 font-mono border border-zinc-200 px-3 py-1 rounded-full bg-white mb-6 w-fit">
-                <span class="text-[#ff631f]">■</span> Proxy Layer: Running (PID: 48102)
-            </div>
-            <h1 class="display-font text-4xl sm:text-5xl font-black tracking-tight text-zinc-950 leading-[1.1] mb-6">
-                Automate your jobs. <br><span class="text-zinc-400">Keep the sovereignty.</span>
-            </h1>
-            <p class="text-zinc-500 text-sm sm:text-base mb-8 font-light leading-relaxed">
-                The first promptless, passive workspace daemon. Xylenic maps repository architecture, processes asynchronous corporate communication loops, and deploys validated production updates natively—completely invisible to endpoint tracking.
-            </p>
-
-            <div class="bg-white border border-zinc-200 p-6 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.01)]">
+    <!-- Split Interface Layout -->
+    <main class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 my-auto py-12">
+        
+        <!-- Left Pane: The Message -->
+        <div class="flex flex-col justify-center">
+            <span class="text-xs uppercase font-mono border border-gray-200 px-3 py-1 rounded-full bg-white text-gray-500 w-fit mb-4">■ Proxy Layer Active</span>
+            <h1 class="text-4xl font-black tracking-tight mb-4">Automate your jobs. <br><span class="text-gray-400">Keep the sovereignty.</span></h1>
+            <p class="text-gray-600 text-sm mb-6 leading-relaxed">The first promptless, passive workspace daemon. Xylenic maps repository architecture and auto-deploys validated production updates natively.</p>
+            
+            <div class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm">
                 <form name="waitlist" method="POST" data-netlify="true" class="flex flex-col gap-3">
-                    <div>
-                        <label class="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">Secure Identity Network</label>
-                        <input type="email" name="email" required placeholder="name@domain.com" 
-                               class="w-full bg-[#faf9f7] border border-zinc-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 font-mono text-zinc-900 placeholder:text-zinc-400 transition">
-                    </div>
-                    <button type="submit" class="w-full bg-[#ebffb1] border border-[#ade900] text-zinc-950 font-bold text-xs tracking-wide py-3.5 rounded-lg hover:bg-[#e2fa9d] active:scale-[0.99] transition shadow-[0_2px_10px_rgba(173,233,0,0.1)] uppercase display-font">
-                        Request Encrypted Alpha Access
-                    </button>
+                    <input type="email" name="email" required placeholder="name@domain.com" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm focus:outline-none">
+                    <button type="submit" class="w-full bg-yellow-200 border border-yellow-400 text-gray-950 font-bold text-xs py-3 rounded-lg uppercase tracking-wider">Request Encrypted Alpha Access</button>
                 </form>
             </div>
         </div>
 
-        <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between aspect-video min-h-[350px]">
-            <div class="flex justify-between items-center border-b border-zinc-900 pb-3">
-                <div class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
-                    <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
-                    <span class="text-xs font-mono text-zinc-500 ml-2">daemon_stream.log</span>
-                </div>
-                <div class="bg-zinc-900/60 border border-zinc-800/80 px-2 py-0.5 rounded text-[10px] font-mono text-[#ade900]">MASKING: ON</div>
+        <!-- Right Pane: The Terminal -->
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between min-h-[300px]">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <span class="text-xs font-mono text-gray-500">daemon_stream.log</span>
+                <span class="bg-gray-800 text-green-400 text-[10px] font-mono px-2 py-0.5 rounded">MASKING: ON</span>
             </div>
-
-            <div id="terminal-screen" class="mono-font text-xs text-zinc-400 space-y-2 py-4 overflow-y-auto flex-1 h-48 text-left">
-                <div class="text-zinc-600">[SYSTEM] Initialization sequencing complete...</div>
-                <div class="text-zinc-600">[TELEMETRY] Scanning background channels...</div>
+            <div id="terminal-screen" class="font-mono text-xs text-gray-400 space-y-2 py-4 h-40 overflow-y-auto">
+                <div class="text-gray-600">[SYSTEM] Initialization sequencing complete...</div>
+                <div class="text-gray-600">[TELEMETRY] Scanning background channels...</div>
             </div>
-
-            <div class="border-t border-zinc-900 pt-3 flex justify-between items-center">
-                <span class="text-[10px] font-mono text-zinc-600">Runtime Engine: Python 3.11</span>
-                <button onclick="triggerSimulation()" class="bg-zinc-900 border border-zinc-800 text-zinc-300 font-mono text-xs px-3 py-1.5 rounded hover:bg-zinc-800 transition active:scale-95">
-                    ▶ Run Live Test Loop
-                </button>
+            <div class="border-t border-gray-800 pt-3 flex justify-between items-center">
+                <span class="text-[10px] font-mono text-gray-600">Runtime: Python 3.11</span>
+                <button onclick="triggerSimulation()" class="bg-gray-800 border border-gray-700 text-gray-300 font-mono text-xs px-3 py-1 rounded">▶ Run Live Test Loop</button>
             </div>
         </div>
     </main>
 
-    <footer class="w-full max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-mono text-zinc-400 border-t border-zinc-200/60 pt-6">
-        <div>&copy; 2026 Xylenic Systems Inc. All rights reserved.</div>
-    </footer>
+    <footer class="w-full max-w-4xl mx-auto text-center border-t border-gray-200 pt-4 text-xs font-mono text-gray-400">&copy; 2026 Xylenic Systems Inc.</footer>
 
     <script>
         const terminal = document.getElementById('terminal-screen');
-        const simulationLogs = [
-            { text: "⏳ [SLACK FEED]: Incoming prompt from Engineering Lead: 'Hey, can anyone update the authentication endpoint bug in repo-7?'", color: "text-amber-400" },
-            { text: "🤖 [XYLENIC OS]: Identity matrix matched. Crafting automated communication output...", color: "text-zinc-400" },
-            { text: "💬 [OUTBOUND REPLY SENT]: 'On it, checking the debug stack now. Give me 5 minutes.'", color: "text-cyan-400" },
-            { text: "🧠 [PREDICTIVE MODELING]: Local context engine parsed repository. Locating bug inside auth_controller.py.", color: "text-zinc-400" },
-            { text: "🔧 [EXECUTION]: Generating patch files and initializing local validation frameworks.", color: "text-[#ade900]" },
-            { text: "🚀 [GITHUB]: Branch 'fix/auth-endpoint' created. Finalizing commit and submitting pull request...", color: "text-purple-400" },
-            { text: "✅ [PRODUCTION]: Pull Request successfully injected into production queue. Mask sequence reset.", color: "text-[#ade900] font-bold" }
+        const logs = [
+            { text: "⏳ [SLACK TELEMETRY]: Lead Engineer: 'Hey, update the auth endpoint bug.'", color: "text-yellow-400" },
+            { text: "💬 [AUTO-REPLY SENT]: 'On it, checking the debug stack now.'", color: "text-blue-400" },
+            { text: "🧠 [MODELING]: Locating bug inside auth_controller.py.", color: "text-gray-400" },
+            { text: "🔧 [EXECUTION]: Generating patch files and compiling tests.", color: "text-green-400" },
+            { text: "🚀 [GITHUB]: Branch created. Submitting pull request...", color: "text-purple-400" },
+            { text: "✅ [PRODUCTION]: Pull Request successfully injected. Mask reset.", color: "text-green-400 font-bold" }
         ];
-        let index = 0;
+        let idx = 0;
         function triggerSimulation() {
-            if(index === 0) terminal.innerHTML = '<div class="text-zinc-600">[SYSTEM] Script simulation triggered...</div>';
-            if (index < simulationLogs.length) {
-                const logItem = document.createElement('div');
-                logItem.className = simulationLogs[index].color;
-                logItem.innerHTML = simulationLogs[index].text;
-                terminal.appendChild(logItem);
-                terminal.scrollTop = terminal.scrollHeight;
-                index++;
+            if(idx === 0) terminal.innerHTML = '<div class="text-gray-600">[SYSTEM] Simulation triggered...</div>';
+            if (idx < logs.length) {
+                const item = document.createElement('div');
+                item.className = logs[idx].color;
+                item.innerHTML = logs[idx].text;
+                terminal.appendChild(item);
+                idx++;
                 setTimeout(triggerSimulation, 1000);
-            } else { index = 0; }
+            } else { idx = 0; }
         }
     </script>
 </body>
