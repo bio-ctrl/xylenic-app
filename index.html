@@ -4,18 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xylenic Systems | Autonomous Worker Proxy</title>
-    <!-- Forced Design Layout Engine -->
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #faf9f7; font-family: system-ui, -apple-system, sans-serif; }
+
+        /* Bouncy top-left logo mark */
+        @keyframes logoBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            35% { transform: translateY(-7px) rotate(-8deg); }
+            55% { transform: translateY(0) rotate(6deg); }
+            75% { transform: translateY(-3px) rotate(-3deg); }
+        }
+        .logo-mark {
+            animation: logoBounce 2.6s cubic-bezier(.34,1.56,.64,1) infinite;
+            transform-origin: 50% 90%;
+        }
+        .logo-mark:hover { animation-duration: .6s; }
+
+        /* Scroll reveal */
+        .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+        .reveal.in { opacity: 1; transform: translateY(0); }
+
+        /* Terminal / demo screens */
+        .demo-screen {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .demo-cursor {
+            display: inline-block;
+            width: 6px;
+            height: 12px;
+            margin-left: 2px;
+            background: currentColor;
+            vertical-align: -1px;
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* FAQ accordion */
+        .faq-panel {
+            display: grid;
+            grid-template-rows: 0fr;
+            overflow: hidden;
+            transition: grid-template-rows .3s ease;
+        }
+        .faq-item.open .faq-panel { grid-template-rows: 1fr; }
+        .faq-panel > div { min-height: 0; }
+        .faq-chevron { transition: transform .3s ease; }
+        .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+        /* Email field error */
+        #email-error { transition: opacity .15s ease; }
     </style>
 </head>
-<body class="text-zinc-900 min-h-screen p-6 sm:p-12 flex flex-col justify-between antialiased">
+<body class="text-zinc-900 min-h-screen antialiased">
+<div class="p-6 sm:p-12">
 
     <!-- Clean Header Frame -->
     <header class="w-full max-w-4xl mx-auto flex justify-between items-center bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
         <div class="flex items-center gap-3">
-            <div class="w-6 h-6 bg-red-500 rounded text-white flex items-center justify-center font-bold text-xs">X</div>
+            <div class="logo-mark w-6 h-6 bg-red-500 rounded text-white flex items-center justify-center font-bold text-xs">X</div>
             <span class="font-mono text-sm font-bold tracking-tight">XYLENIC PROTOCOL v1.0.4</span>
         </div>
         <div class="flex items-center gap-2">
@@ -24,9 +73,9 @@
         </div>
     </header>
 
-    <!-- Clean Two-Column Grid Setup (No Dark Simulation Window) -->
-    <main class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 my-auto py-12">
-        
+    <!-- Clean Two-Column Grid Setup -->
+    <main class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 py-12">
+
         <!-- Left Side: Product Positioning -->
         <div class="flex flex-col justify-center">
             <div class="inline-flex items-center gap-2 text-xs uppercase font-mono border border-gray-200 px-3 py-1 rounded-full bg-white text-gray-500 w-fit mb-6">
@@ -38,24 +87,30 @@
             <p class="text-gray-500 text-base font-light leading-relaxed">
                 The first promptless, passive workspace daemon. Xylenic maps repository architecture, processes asynchronous corporate communication loops, and deploys validated production updates natively—completely invisible to endpoint tracking frameworks.
             </p>
+            <ul class="mt-6 space-y-2 font-mono text-xs text-gray-400">
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Zero endpoint footprint</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Auto PR delivery on every commit</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Runs quietly through standup</li>
+            </ul>
         </div>
 
         <!-- Right Side: Clean White Lead Capture Box -->
         <div class="flex flex-col justify-center">
-            <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm space-y-6">
+            <div id="signup" class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm space-y-6">
                 <div>
                     <h3 class="text-lg font-bold text-gray-900">Request Encrypted Access</h3>
                     <p class="text-xs text-gray-400 font-mono mt-1">Join 400+ remote engineers in the stealth queue.</p>
                 </div>
 
                 <!-- Netlify Automatic Form Connection -->
-                <form name="waitlist" method="POST" data-netlify="true" class="space-y-4">
+                <form name="waitlist" method="POST" data-netlify="true" novalidate class="space-y-4">
                     <div>
                         <label class="text-[10px] font-mono uppercase tracking-wider text-gray-400 block mb-1">Secure Corporate Email</label>
-                        <input type="email" name="email" required placeholder="name@company.com" 
+                        <input id="email-input" type="email" name="email" required placeholder="name@company.com"
                                class="w-full bg-[#faf9f7] border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-gray-400 font-mono transition">
+                        <p id="email-error" class="hidden opacity-0 text-red-500 text-[11px] font-mono mt-2">That doesn't look like a real email &ndash; try again.</p>
                     </div>
-                    
+
                     <!-- Sunlit High-Contrast Action Button -->
                     <button type="submit" class="w-full bg-yellow-100 border border-yellow-300 text-gray-950 font-bold text-xs tracking-wider py-4 rounded-lg hover:bg-yellow-200 transition uppercase font-mono shadow-sm">
                         Secure Alpha Token
@@ -70,10 +125,315 @@
 
     </main>
 
+    <!-- Demo Section -->
+    <section class="w-full max-w-4xl mx-auto py-16">
+        <div class="reveal mb-10">
+            <div class="inline-flex items-center gap-2 text-xs uppercase font-mono border border-gray-200 px-3 py-1 rounded-full bg-white text-gray-500 w-fit mb-4">
+                ■ See It Run
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 leading-tight">
+                How Xylenic operates <span class="text-gray-400">while you're elsewhere</span>
+            </h2>
+            <p class="text-gray-500 text-base font-light leading-relaxed mt-3 max-w-2xl">
+                Two live feeds from the proxy engine. Nothing staged &mdash; this is the exact process log Xylenic writes internally on a normal working day.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Demo Panel A -->
+            <div class="reveal bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="p-6 pb-4">
+                    <h3 class="font-bold text-gray-900 text-base">Xylenic listens for incoming pings</h3>
+                    <p class="text-xs text-gray-400 font-mono mt-1 leading-relaxed">Watches your inbound channels in real time and drafts a context-aware reply before anyone notices you stepped away.</p>
+                </div>
+                <div class="mx-6 mb-6 rounded-xl bg-zinc-900 p-4 flex-1 min-h-[220px]">
+                    <div class="flex items-center gap-1.5 mb-3">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-yellow-300/70"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
+                        <span class="text-[10px] font-mono text-zinc-500 ml-2">slack-bridge.log</span>
+                    </div>
+                    <div id="demo-a" class="demo-screen text-xs leading-relaxed text-zinc-300"></div>
+                </div>
+            </div>
+
+            <!-- Demo Panel B -->
+            <div class="reveal bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="p-6 pb-4">
+                    <h3 class="font-bold text-gray-900 text-base">Ships real commits while you're away</h3>
+                    <p class="text-xs text-gray-400 font-mono mt-1 leading-relaxed">Scans repo structure, writes the missing tests, and opens the pull request&mdash;fully unattended.</p>
+                </div>
+                <div class="mx-6 mb-6 rounded-xl bg-zinc-900 p-4 flex-1 min-h-[220px]">
+                    <div class="flex items-center gap-1.5 mb-3">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-400/70"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-yellow-300/70"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-green-400/70"></span>
+                        <span class="text-[10px] font-mono text-zinc-500 ml-2">git-worker.log</span>
+                    </div>
+                    <div id="demo-b" class="demo-screen text-xs leading-relaxed text-zinc-300"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="w-full max-w-4xl mx-auto py-16">
+        <h2 class="reveal text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-8">
+            Frequently asked questions
+        </h2>
+        <div class="reveal divide-y divide-gray-200 border-t border-b border-gray-200">
+
+            <div class="faq-item">
+                <button type="button" class="w-full flex items-center justify-between text-left py-5 gap-4">
+                    <span class="font-medium text-gray-900 text-sm sm:text-base">How is Xylenic invisible to workplace monitoring tools?</span>
+                    <svg class="faq-chevron w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="faq-panel"><div class="pb-5 pr-8 text-sm text-gray-500 font-light leading-relaxed">
+                    Xylenic runs entirely inside your existing terminal and IDE sessions, using the same process signatures as normal developer tooling &mdash; nothing extra shows up in endpoint logs.
+                </div></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="w-full flex items-center justify-between text-left py-5 gap-4">
+                    <span class="font-medium text-gray-900 text-sm sm:text-base">Do I need to install anything on my work laptop?</span>
+                    <svg class="faq-chevron w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="faq-panel"><div class="pb-5 pr-8 text-sm text-gray-500 font-light leading-relaxed">
+                    A single binary, no background daemon, nothing listed separately in your task manager. Setup takes under two minutes.
+                </div></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="w-full flex items-center justify-between text-left py-5 gap-4">
+                    <span class="font-medium text-gray-900 text-sm sm:text-base">What happens to my code and messages? Is anything logged?</span>
+                    <svg class="faq-chevron w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="faq-panel"><div class="pb-5 pr-8 text-sm text-gray-500 font-light leading-relaxed">
+                    Nothing leaves your machine. The proxy runs locally and only syncs encrypted metadata to confirm your alpha token is still active.
+                </div></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="w-full flex items-center justify-between text-left py-5 gap-4">
+                    <span class="font-medium text-gray-900 text-sm sm:text-base">Which tools does it integrate with?</span>
+                    <svg class="faq-chevron w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="faq-panel"><div class="pb-5 pr-8 text-sm text-gray-500 font-light leading-relaxed">
+                    GitHub, GitLab, Slack, and any terminal-based git workflow. More integrations unlock as the stealth queue clears.
+                </div></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="w-full flex items-center justify-between text-left py-5 gap-4">
+                    <span class="font-medium text-gray-900 text-sm sm:text-base">Is there a free trial before I need an alpha token?</span>
+                    <svg class="faq-chevron w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="faq-panel"><div class="pb-5 pr-8 text-sm text-gray-500 font-light leading-relaxed">
+                    Every token includes a 14-day trial window. No card required to join the queue.
+                </div></div>
+            </div>
+
+            <div class="faq-item">
+                <button type="button" class="w-full flex items-center justify-between text-left py-5 gap-4">
+                    <span class="font-medium text-gray-900 text-sm sm:text-base">Can I revoke access or cancel anytime?</span>
+                    <svg class="faq-chevron w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div class="faq-panel"><div class="pb-5 pr-8 text-sm text-gray-500 font-light leading-relaxed">
+                    Yes &mdash; one command wipes every local credential instantly, no support ticket needed.
+                </div></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="w-full max-w-4xl mx-auto py-8">
+        <div class="reveal bg-white border border-gray-200 rounded-2xl shadow-sm p-8 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+                <h3 class="text-xl font-bold text-gray-900">Ready to get your hours back?</h3>
+                <p class="text-sm text-gray-500 font-light mt-1">Alpha tokens are limited to the current stealth queue window.</p>
+            </div>
+            <button id="cta-scroll" type="button" class="shrink-0 bg-yellow-100 border border-yellow-300 text-gray-950 font-bold text-xs tracking-wider py-4 px-8 rounded-lg hover:bg-yellow-200 transition uppercase font-mono shadow-sm">
+                Secure Alpha Token
+            </button>
+        </div>
+    </section>
+
     <!-- Simple Corporate Footer -->
-    <footer class="w-full max-w-4xl mx-auto flex justify-between items-center text-xs font-mono text-gray-400 border-t border-gray-200 pt-6">
+    <footer class="w-full max-w-4xl mx-auto flex justify-between items-center text-xs font-mono text-gray-400 border-t border-gray-200 pt-6 pb-6">
         <div>&copy; 2026 Xylenic Systems Inc. All rights reserved.</div>
     </footer>
+
+</div>
+
+<script>
+    // ---- Email validation ----
+    (function () {
+        var form = document.querySelector('form[name="waitlist"]');
+        var input = document.getElementById('email-input');
+        var error = document.getElementById('email-error');
+        var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        function setInvalid(show) {
+            if (show) {
+                error.classList.remove('hidden');
+                requestAnimationFrame(function () { error.classList.remove('opacity-0'); });
+                input.classList.add('border-red-400');
+                input.classList.remove('border-gray-200');
+            } else {
+                error.classList.add('opacity-0');
+                input.classList.remove('border-red-400');
+                input.classList.add('border-gray-200');
+                setTimeout(function () { error.classList.add('hidden'); }, 150);
+            }
+        }
+
+        input.addEventListener('input', function () {
+            if (!error.classList.contains('hidden') && emailRe.test(input.value.trim())) {
+                setInvalid(false);
+            }
+        });
+
+        input.addEventListener('blur', function () {
+            if (input.value.trim().length > 0 && !emailRe.test(input.value.trim())) {
+                setInvalid(true);
+            }
+        });
+
+        form.addEventListener('submit', function (e) {
+            var value = input.value.trim();
+            if (!emailRe.test(value)) {
+                e.preventDefault();
+                setInvalid(true);
+                input.focus();
+            }
+        });
+    })();
+
+    // ---- Demo terminal typewriters ----
+    (function () {
+        function typeLoop(el, lines, opts) {
+            opts = opts || {};
+            var charDelay = opts.charDelay || 18;
+            var lineDelay = opts.lineDelay || 450;
+            var holdDelay = opts.holdDelay || 2200;
+            var colorMap = opts.colorMap || {};
+
+            function colorFor(line) {
+                for (var prefix in colorMap) {
+                    if (line.indexOf(prefix) === 0) return colorMap[prefix];
+                }
+                return null;
+            }
+
+            function run() {
+                el.innerHTML = '';
+                var i = 0;
+                function nextLine() {
+                    if (i >= lines.length) {
+                        setTimeout(run, holdDelay);
+                        return;
+                    }
+                    var line = lines[i];
+                    var color = colorFor(line);
+                    var row = document.createElement('div');
+                    if (color) row.style.color = color;
+                    el.appendChild(row);
+                    var j = 0;
+                    var cursor = document.createElement('span');
+                    cursor.className = 'demo-cursor';
+
+                    function nextChar() {
+                        if (j < line.length) {
+                            row.textContent = line.slice(0, j + 1);
+                            row.appendChild(cursor);
+                            j++;
+                            setTimeout(nextChar, charDelay);
+                        } else {
+                            cursor.remove();
+                            i++;
+                            setTimeout(nextLine, lineDelay);
+                        }
+                    }
+                    nextChar();
+                }
+                nextLine();
+            }
+            run();
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                var el = entry.target;
+                observer.unobserve(el);
+
+                if (el.id === 'demo-a') {
+                    typeLoop(el, [
+                        'manager: hey, did you finish those API tests?',
+                        '> drafting context-aware reply...',
+                        'you: yeah, wrapping up final assertions—pushing to main in 2.',
+                        '✓ reply sent · 0.4s · undetected'
+                    ], { colorMap: { 'you:': '#eab308', '✓': '#4ade80', '>': '#71717a' } });
+                }
+
+                if (el.id === 'demo-b') {
+                    typeLoop(el, [
+                        '$ scanning auth_handler.go...',
+                        '+ func TestAuthenticationSuccess(t *testing.T) {',
+                        '+     ...assert w.Code == 200',
+                        '+ }',
+                        '$ git commit -m "feat: add auth integration tests"',
+                        '✓ PR #142 opened · ready for review'
+                    ], { colorMap: { '+': '#4ade80', '$': '#a1a1aa', '✓': '#eab308' } });
+                }
+            });
+        }, { threshold: 0.35 });
+
+        ['demo-a', 'demo-b'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+    })();
+
+    // ---- Scroll reveal ----
+    (function () {
+        var revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(function (el) {
+            revealObserver.observe(el);
+        });
+    })();
+
+    // ---- FAQ accordion ----
+    (function () {
+        document.querySelectorAll('.faq-item button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                btn.closest('.faq-item').classList.toggle('open');
+            });
+        });
+    })();
+
+    // ---- CTA scroll ----
+    (function () {
+        var btn = document.getElementById('cta-scroll');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                document.getElementById('signup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.getElementById('email-input').focus({ preventScroll: true });
+            });
+        }
+    })();
+</script>
 
 </body>
 </html>
