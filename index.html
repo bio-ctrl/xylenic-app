@@ -3,77 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xylenic Systems | Autonomous Worker Proxy</title>
-    <!-- Forced Design Layout Engine -->
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>Xylenic — Automate your jobs. Retain your sovereignty.</title>
+    <meta name="description" content="Xylenic runs your recurring engineering work on infrastructure you control. Join the waitlist.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        canvas: '#faf9f7',
+                        ink: '#17161c',
+                        rust: '#ff5a1f',
+                        volt: '#d7fb2d',
+                    },
+                    fontFamily: {
+                        display: ['"Unbounded"', 'sans-serif'],
+                        body: ['"Instrument Sans"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
     <style>
-        body { background-color: #faf9f7; font-family: system-ui, -apple-system, sans-serif; }
+        html { background-color: #faf9f7; }
+        body {
+            background-color: #faf9f7;
+            font-family: 'Instrument Sans', sans-serif;
+            color: #17161c;
+        }
+
+        /* Warm gradient mesh, no purple/blue — orange + lime only */
+        .mesh {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 55% 40% at 12% 8%, rgba(255, 90, 31, 0.16), transparent 60%),
+                radial-gradient(ellipse 45% 38% at 92% 18%, rgba(215, 251, 45, 0.22), transparent 60%),
+                radial-gradient(ellipse 60% 45% at 50% 100%, rgba(255, 90, 31, 0.08), transparent 65%);
+        }
+
+        /* Fixed grain overlay — never on scrolling containers */
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.35;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .dot-grid {
+            background-image: radial-gradient(circle, rgba(23,22,28,0.10) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.66);
+            backdrop-filter: blur(22px) saturate(140%);
+            -webkit-backdrop-filter: blur(22px) saturate(140%);
+        }
+
+        .shadow-expensive {
+            box-shadow:
+                0 1px 1px rgba(23, 22, 28, 0.04),
+                0 8px 24px -8px rgba(23, 22, 28, 0.10),
+                0 32px 64px -24px rgba(255, 90, 31, 0.18);
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .rise { opacity: 0; animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .d1 { animation-delay: 0.05s; } .d2 { animation-delay: 0.15s; }
+        .d3 { animation-delay: 0.28s; } .d4 { animation-delay: 0.42s; }
+        .d5 { animation-delay: 0.56s; } .d6 { animation-delay: 0.7s; }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-10px) rotate(-1deg); }
+        }
+        .float-slow { animation: float-slow 7s ease-in-out infinite; }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+        .pulse-dot { animation: pulse-dot 2.2s ease-in-out infinite; }
+
+        input:focus { outline: none; }
+
+        .btn-volt {
+            background: #d7fb2d;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.25s ease;
+            box-shadow: 0 1px 0 rgba(23,22,28,0.08) inset, 0 10px 24px -10px rgba(180, 220, 20, 0.9);
+        }
+        .btn-volt:hover {
+            background: #c7ec1c;
+            transform: translateY(-2px);
+            box-shadow: 0 1px 0 rgba(23,22,28,0.08) inset, 0 16px 32px -12px rgba(180, 220, 20, 1);
+        }
+        .btn-volt:active { transform: translateY(0); }
+
+        .btn-volt.is-loading { pointer-events: none; }
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(23,22,28,0.25);
+            border-top-color: #17161c;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .field-error {
+            display: none;
+        }
+        .group:has(input:invalid:not(:placeholder-shown)) .field-error {
+            display: block;
+        }
+        .group:has(input:invalid:not(:placeholder-shown)) input {
+            border-color: #ff5a1f !important;
+        }
     </style>
 </head>
-<body class="text-zinc-900 min-h-screen p-6 sm:p-12 flex flex-col justify-between antialiased">
+<body class="text-ink antialiased min-h-screen">
 
-    <!-- Clean Header Frame -->
-    <header class="w-full max-w-4xl mx-auto flex justify-between items-center bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-6 h-6 bg-red-500 rounded text-white flex items-center justify-center font-bold text-xs">X</div>
-            <span class="font-mono text-sm font-bold tracking-tight">XYLENIC PROTOCOL v1.0.4</span>
-        </div>
-        <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-            <span class="text-xs font-mono text-gray-400 uppercase font-semibold">Proxy Streaming</span>
-        </div>
-    </header>
+    <div class="mesh"></div>
+    <div class="grain"></div>
 
-    <!-- Clean Two-Column Grid Setup (No Dark Simulation Window) -->
-    <main class="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 my-auto py-12">
-        
-        <!-- Left Side: Product Positioning -->
-        <div class="flex flex-col justify-center">
-            <div class="inline-flex items-center gap-2 text-xs uppercase font-mono border border-gray-200 px-3 py-1 rounded-full bg-white text-gray-500 w-fit mb-6">
-                ■ Secure Network Proxy
-            </div>
-            <h1 class="text-4xl sm:text-5xl font-black tracking-tight text-gray-900 mb-6 leading-tight">
-                Automate your jobs. <br><span class="text-gray-400">Keep the sovereignty.</span>
-            </h1>
-            <p class="text-gray-500 text-base font-light leading-relaxed">
-                The first promptless, passive workspace daemon. Xylenic maps repository architecture, processes asynchronous corporate communication loops, and deploys validated production updates natively—completely invisible to endpoint tracking frameworks.
-            </p>
-        </div>
+    <div class="relative z-10 min-h-screen flex flex-col px-6 py-8 sm:px-10 sm:py-10">
 
-        <!-- Right Side: Clean White Lead Capture Box -->
-        <div class="flex flex-col justify-center">
-            <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm space-y-6">
-                <div>
-                    <h3 class="text-lg font-bold text-gray-900">Request Encrypted Access</h3>
-                    <p class="text-xs text-gray-400 font-mono mt-1">Join 400+ remote engineers in the stealth queue.</p>
+        <!-- Header -->
+        <header class="w-full max-w-6xl mx-auto flex justify-between items-center rise d1">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-rust rounded-lg rotate-[-6deg] flex items-center justify-center shadow-[0_10px_20px_-8px_rgba(255,90,31,0.7)]">
+                    <span class="text-white font-display font-800 text-sm -rotate-[-6deg]" style="font-weight:800;">X</span>
                 </div>
+                <span class="font-display font-700 text-[15px] tracking-tight" style="font-weight:700;">Xylenic</span>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 text-xs text-ink/50">
+                <span class="w-1.5 h-1.5 rounded-full bg-rust pulse-dot"></span>
+                <span class="tracking-wide">Private beta &middot; opening in waves</span>
+            </div>
+        </header>
 
-                <!-- Netlify Automatic Form Connection -->
-                <form name="waitlist" method="POST" data-netlify="true" class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-mono uppercase tracking-wider text-gray-400 block mb-1">Secure Corporate Email</label>
-                        <input type="email" name="email" required placeholder="name@company.com" 
-                               class="w-full bg-[#faf9f7] border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-gray-400 font-mono transition">
+        <!-- Main -->
+        <main class="flex-1 w-full max-w-6xl mx-auto flex items-center py-16 sm:py-20">
+            <div class="w-full grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-14 lg:gap-10 items-center">
+
+                <!-- Left: positioning -->
+                <div class="rise d2">
+                    <div class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] font-semibold text-ink/60 bg-white/70 border border-ink/10 px-3.5 py-1.5 rounded-full mb-8">
+                        For teams tired of babysitting cron jobs
                     </div>
-                    
-                    <!-- Sunlit High-Contrast Action Button -->
-                    <button type="submit" class="w-full bg-yellow-100 border border-yellow-300 text-gray-950 font-bold text-xs tracking-wider py-4 rounded-lg hover:bg-yellow-200 transition uppercase font-mono shadow-sm">
-                        Secure Alpha Token
-                    </button>
-                </form>
 
-                <div class="border-t border-gray-100 pt-4 text-center">
-                    <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest">● End-To-End Security Guaranteed</span>
+                    <h1 class="font-display leading-[0.98] tracking-tight text-[13vw] sm:text-[64px] lg:text-[72px]" style="font-weight:800;">
+                        Automate your jobs.
+                        <br>
+                        <span class="text-rust">Retain your sovereignty.</span>
+                    </h1>
+
+                    <p class="mt-8 text-[17px] leading-relaxed text-ink/65 max-w-md">
+                        Xylenic runs your recurring engineering work — deploys, migrations, on-call triage — on infrastructure you already own. Nothing phones home. No vendor holds your keys.
+                    </p>
+
+                    <div class="mt-10 flex items-center gap-6 text-xs text-ink/45">
+                        <div class="flex items-center gap-2">
+                            <span class="font-display text-ink text-sm" style="font-weight:700;">2,317</span>
+                            <span>engineers on the list</span>
+                        </div>
+                        <div class="w-px h-4 bg-ink/15"></div>
+                        <div>Self-hosted from day one</div>
+                    </div>
                 </div>
+
+                <!-- Right: glass capture card -->
+                <div class="relative rise d3">
+                    <!-- offset accent panel behind card -->
+                    <div class="hidden sm:block absolute -top-5 -right-5 w-full h-full bg-rust/15 rounded-[28px] float-slow"></div>
+
+                    <div class="relative glass border border-gray-200/60 rounded-[28px] shadow-expensive p-8 sm:p-9">
+                        <div class="absolute inset-0 rounded-[28px] dot-grid opacity-[0.4] pointer-events-none" style="mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);"></div>
+
+                        <div class="relative">
+                            <h3 class="font-display text-[20px] tracking-tight" style="font-weight:700;">Get early access</h3>
+                            <p class="text-[13px] text-ink/50 mt-1.5">One invite email. No spam, no drip campaign.</p>
+
+                            <form name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="mt-7 space-y-3" id="waitlist-form">
+                                <input type="hidden" name="form-name" value="waitlist" />
+                                <p class="hidden">
+                                    <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+                                </p>
+
+                                <div class="group">
+                                    <label for="email" class="text-[11px] font-semibold uppercase tracking-wider text-ink/45 block mb-1.5">Work email</label>
+                                    <input
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        required
+                                        placeholder="you@company.com"
+                                        class="w-full bg-white/80 border border-ink/15 rounded-xl px-4 py-3.5 text-[15px] placeholder:text-ink/30 focus:border-rust transition"
+                                    >
+                                    <span class="field-error text-[11px] text-rust mt-1.5 block">That doesn't look like a real email — try again.</span>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    id="waitlist-submit"
+                                    class="btn-volt w-full text-ink font-display text-[13px] uppercase tracking-[0.08em] py-4 rounded-xl flex items-center justify-center gap-2"
+                                    style="font-weight:700;"
+                                >
+                                    <span class="btn-label">Claim your slot</span>
+                                </button>
+                            </form>
+
+                            <div id="waitlist-success" class="hidden mt-5 flex items-start gap-3 bg-volt/20 border border-volt/60 rounded-xl px-4 py-3.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-ink mt-1.5"></span>
+                                <p class="text-[13px] text-ink/80 leading-relaxed">You're on the list. Watch your inbox — invites go out in small waves, oldest signups first.</p>
+                            </div>
+
+                            <div class="border-t border-ink/10 mt-6 pt-5 flex items-center justify-between text-[11px] text-ink/40">
+                                <span>No credit card</span>
+                                <span>Unsubscribe anytime</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </div>
+        </main>
 
-    </main>
+        <!-- Footer -->
+        <footer class="w-full max-w-6xl mx-auto flex flex-col sm:flex-row gap-2 justify-between items-center text-xs text-ink/40 border-t border-ink/10 pt-6 rise d4">
+            <div>&copy; 2026 Xylenic. Built for teams who read their own logs.</div>
+            <div class="flex items-center gap-5">
+                <span>hello@xylenic.dev</span>
+            </div>
+        </footer>
 
-    <!-- Simple Corporate Footer -->
-    <footer class="w-full max-w-4xl mx-auto flex justify-between items-center text-xs font-mono text-gray-400 border-t border-gray-200 pt-6">
-        <div>&copy; 2026 Xylenic Systems Inc. All rights reserved.</div>
-    </footer>
+    </div>
 
+    <script>
+        // Progressive enhancement: keep the native Netlify POST as fallback,
+        // but show inline success/loading state when JS is available.
+        var form = document.getElementById('waitlist-form');
+        var submitBtn = document.getElementById('waitlist-submit');
+        var btnLabel = submitBtn.querySelector('.btn-label');
+        var successBox = document.getElementById('waitlist-success');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            submitBtn.classList.add('is-loading');
+            btnLabel.innerHTML = '<span class="spinner"></span>';
+
+            var data = new URLSearchParams(new FormData(form)).toString();
+
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: data,
+            })
+                .then(function () {
+                    form.classList.add('hidden');
+                    successBox.classList.remove('hidden');
+                })
+                .catch(function () {
+                    // form.submit() bypasses JS listeners entirely, so this is safe from loops.
+                    form.submit();
+                });
+        });
+    </script>
 </body>
 </html>
