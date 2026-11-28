@@ -1,5 +1,7 @@
 name: ORCUS CI
 
+# Pipeline experiment synchronization marker: 2026-11-28T05:38Z
+
 on:
   push:
     branches: [main]
@@ -117,12 +119,46 @@ jobs:
       - name: Install pinned Yosys and nextpnr ECP5 toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install -y yosys=0.33-5build2 nextpnr-ecp5=0.6-3build5 nextpnr-ecp5-chipdb=0.6-3build5
+          sudo apt-get install -y yosys=0.33-5build2 nextpnr-ecp5=0.6-3build5 nextpnr-ecp5-chipdb=0.6-3build5 iverilog
           yosys -V
           nextpnr-ecp5 --version
 
       - name: Test FPGA wrapper and report parser
         run: python -m unittest discover -s tests -p 'test_fpga_ecp5.py' -v
+
+      - name: Test pipelined Dadda generator and sequential harness
+        run: python -m unittest discover -s tests -p 'test_dadda_pipeline.py' -v
+
+      - name: Run 4/8/16/32-lane pipelined Dadda formal, streaming, synthesis, and place-and-route
+        run: |
+          python -u benchmarks/fpga_ecp5_pipeline.py --freq 100 --seed 1 \
+            --outdir /tmp/orcus-fpga-ecp5-pipelined-dadda/runs \
+            --output /tmp/orcus-fpga-ecp5-pipelined-dadda/results.json
+
+      - name: Upload pipelined Dadda ECP5 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orcus-fpga-ecp5-pipelined-dadda
+          path: /tmp/orcus-fpga-ecp5-pipelined-dadda
+          if-no-files-found: warn
+
+      - name: Test ORCUS A/B operand scratchpad RTL
+        run: python -m unittest discover -s tests -p 'test_operand_scratchpad_rtl.py' -v
+
+      - name: Test ORCUS K-loop controller and synchronous tag alignment
+        run: python -m unittest discover -s tests -p 'test_kloop_controller_rtl.py' -v
+
+      - name: Prove scratchpad DP16KD inference and place 32-lane harness
+        run: python -u benchmarks/fpga_ecp5_scratchpad.py --require-tools --freq 100 --seed 1 --outdir /tmp/orcus-fpga-ecp5-scratchpad
+
+      - name: Upload scratchpad ECP5 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: orcus-fpga-ecp5-scratchpad
+          path: /tmp/orcus-fpga-ecp5-scratchpad
+          if-no-files-found: warn
 
       - name: Run 4/8/16/32-lane ECP5 synthesis and place-and-route
         run: |
